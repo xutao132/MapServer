@@ -89,7 +89,7 @@ public class RegisterServer implements IServer {
 			int i = 0;
 			while (message == null || message.length() < 9) {// 不断循环的读取客户端发送过来的消息
 				socket.getInputStream();
-				if (socket == null || i > 50) {// 知道i>50,抛出异常
+				if (socket == null || i > 50) {// 直到i>50,抛出异常
 					throw new IOException("连接异常");
 				}
 				message = bufferedReader.readLine();
@@ -97,7 +97,7 @@ public class RegisterServer implements IServer {
 			}
 			org.json.JSONObject jsonObject = new org.json.JSONObject(message);// 解析客户端发送过来的消息
 			int type = jsonObject.getInt("type");
-			if (type != 210) {// 如果类型为210的话抛出异常
+			if (type != 210) {// 如果类型不为210的话抛出异常
 				throw new Exception("注册类型错误");
 			}
 			return message;
@@ -116,7 +116,7 @@ public class RegisterServer implements IServer {
 	private User register(String message) throws Exception {
 		IMapServerDao iuser = new IMapServerDao();
 		//把字符串转换为Javabean对象（message——》Javabean对象）
-		JsonBean jsonBean = (JsonBean) JSON.parseObject(message, JsonBean.class);
+		JsonBean jsonBean = JSON.parseObject(message, JsonBean.class);
 		User user = jsonBean.getUser();
 		if (user == null) {
 			throw new Exception("服务器接收到空对象");

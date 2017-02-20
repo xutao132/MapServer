@@ -2,6 +2,10 @@ package com.hh.test;
 
 import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
@@ -12,6 +16,7 @@ import com.hh.entity.User;
 import com.hh.impdao.IMapServerDao;
 
 public class JavaTest {
+	static Socket soc;
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -35,15 +40,25 @@ public class JavaTest {
 			e.printStackTrace();
 		}*/
 		/**
-		 * 测试注册（成功）
+		 * 测试注册（成功）?
 		 */
-		Socket soc = new Socket("10.7.184.56", 10089);
-		JsonBean  jsonBean = new JsonBean(1, 1, "", "");
-		IMapServerDao dao = new IMapServerDao();
-		User user = new User(getUserid1(dao, 11111111, 222222222),"1357803720","abc123");
+		System.out.println("--------1------");
+		User user = new User(-1,"18387390391","abc123");
+		System.out.println("--------2------");
+		JsonBean  jsonBean = new JsonBean(210, user.getUid(),"","");
+		System.out.println("--------3------");
 		jsonBean.setUser(user);
+		System.out.println("---------4-----");
+		soc = new Socket();
+		System.out.println("---------5-----");
+		soc.connect(new InetSocketAddress("10.7.184.60", 10089),100);
+		
+		System.out.println("----------6----");
+		PrintWriter printWriter = 
+				new PrintWriter(new OutputStreamWriter(soc.getOutputStream(),"utf-8"),true);
+		System.out.println("---------7-----"+jsonBean.getUser());
+	    printWriter.println(JSON.toJSONString(jsonBean)+"\n");
 		System.out.println(JSON.toJSONString(jsonBean));
-		dao.registerUser(user);
 	}
 	
 	private static int getUserid1(IMapServerDao user, int min, int max) throws Exception {
