@@ -1,0 +1,9 @@
+1、receiveMessage()：接收用户发来的消息
+	1》receiveString();接收消息
+	2》User user = register(message);去数据库验证消息
+
+2、验证完消息之后要将数据发送到客户端sendMessage(message);
+
+3、以上完成之后生成账号 getUserid(IDao iUser, int min, int max)
+
+4.最后编写测试类，测试代码。。。。。。
