@@ -17,5 +17,8 @@ public interface MapServerDao {
 	 * @return 返回查找到的用户 
 	 */
 	User searchUser(int userid)throws Exception;
+	
+	
+	User searchUser(String account)throws Exception;
 
 }

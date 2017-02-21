@@ -1,6 +1,8 @@
 package com.hh.test;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream.GetField;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -22,7 +24,6 @@ public class JavaTest {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		
 		/**
 		 * 测试数据库连接（成功）
 		 */
@@ -40,25 +41,20 @@ public class JavaTest {
 			e.printStackTrace();
 		}*/
 		/**
-		 * 测试注册（成功）?
+		 * 测试注册/登录（成功）
 		 */
-		System.out.println("--------1------");
-		User user = new User(-1,"18387390391","abc123");
-		System.out.println("--------2------");
-		JsonBean  jsonBean = new JsonBean(210, user.getUid(),"","");
-		System.out.println("--------3------");
+		User user = new User(1,"13678132676","abc123");
+		JsonBean  jsonBean = new JsonBean(200, user.getUid(),"","");
 		jsonBean.setUser(user);
-		System.out.println("---------4-----");
 		soc = new Socket();
-		System.out.println("---------5-----");
-		soc.connect(new InetSocketAddress("10.7.184.60", 10089),100);
-		
-		System.out.println("----------6----");
-		PrintWriter printWriter = 
-				new PrintWriter(new OutputStreamWriter(soc.getOutputStream(),"utf-8"),true);
-		System.out.println("---------7-----"+jsonBean.getUser());
+		soc.connect(new InetSocketAddress("10.7.184.56", 10088),100);
+		PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(soc.getOutputStream(),"utf-8"),true);
 	    printWriter.println(JSON.toJSONString(jsonBean)+"\n");
-		System.out.println(JSON.toJSONString(jsonBean));
+	    
+	    BufferedReader bufferedReader = new BufferedReader(
+	    		new InputStreamReader(soc.getInputStream()));
+	    String readLine = bufferedReader.readLine();
+	    System.out.println(readLine);
 	}
 	
 	private static int getUserid1(IMapServerDao user, int min, int max) throws Exception {

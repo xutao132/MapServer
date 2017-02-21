@@ -1,11 +1,17 @@
 package com.hh.entity;
 
+import java.io.Serializable;
+
 /**
  * 此类为用户信息
  * @author Administrator
  *
  */
-public class User {
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int Uid;//用户ID
 	private String Uaccount;//用户账号
 	private String Upassword;//用户密码

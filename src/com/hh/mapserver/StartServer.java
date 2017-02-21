@@ -23,7 +23,7 @@ public class StartServer {
 		String str = "";
 		// 登录服务器
 		try {
-			final ServerSocket loginServerSocket = new ServerSocket(10090);
+			final ServerSocket loginServerSocket = new ServerSocket(10088);
 			// 开启登录服务器接收用户登录
 			threadPool.execute(new Runnable() {
 				public void run() {
@@ -47,40 +47,37 @@ public class StartServer {
 			e.printStackTrace();
 			System.out.println("登录服务器异常。。。");
 		}
-		
+
 		/**
 		 * 用户注册
 		 */
-				try {
-					final ServerSocket registerServerSocket = new ServerSocket(10089);
-					// 开启注册服务器
-					threadPool.execute(new Runnable() {
-						public void run() {
-							while (true) {
-								try {
-									System.out.println("等待用户连接。。。");
-									Socket socket = registerServerSocket.accept();
-									if (socket != null) {
-										System.out.println("客户端:" + socket.toString()
-												+ "已连接上注册服务器。。。");
-										// 为用户开启线程注册线程
-										threadPool.execute(new RegisterServer(socket));
-									}
-								} catch (IOException e) {
-
-									e.printStackTrace();
-								}
+		try {
+			final ServerSocket registerServerSocket = new ServerSocket(10089);
+			// 开启注册服务器
+			threadPool.execute(new Runnable() {
+				public void run() {
+					while (true) {
+						try {
+							System.out.println("等待用户连接。。。");
+							Socket socket = registerServerSocket.accept();
+							if (socket != null) {
+								System.out.println("客户端:" + socket.toString()
+										+ "已连接上注册服务器。。。");
+								// 为用户开启线程注册线程
+								threadPool.execute(new RegisterServer(socket));
 							}
-						}
-					});
+						} catch (IOException e) {
 
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.out.println("注册服务器异常。。。");
+							e.printStackTrace();
+						}
+					}
 				}
-	
-		
-		
-	
+			});
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("注册服务器异常。。。");
+		}
+
 	}
 }

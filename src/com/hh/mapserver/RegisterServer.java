@@ -10,6 +10,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Random;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.alibaba.fastjson.JSON;
 import com.hh.dao.MapServerDao;
 import com.hh.entity.JsonBean;
@@ -72,6 +74,7 @@ public class RegisterServer implements IServer {
 	 * 像客户端发送消息
 	 */
 	public void sendMessage(String jsonMessage) throws Exception {
+		//System.out.println(jsonMessage);
 		sendMessage(jsonMessage, socket);
 	}
 
@@ -97,6 +100,7 @@ public class RegisterServer implements IServer {
 			}
 			org.json.JSONObject jsonObject = new org.json.JSONObject(message);// 解析客户端发送过来的消息
 			int type = jsonObject.getInt("type");
+			System.out.println(type);
 			if (type != 210) {// 如果类型不为210的话抛出异常
 				throw new Exception("注册类型错误");
 			}
@@ -116,8 +120,10 @@ public class RegisterServer implements IServer {
 	private User register(String message) throws Exception {
 		IMapServerDao iuser = new IMapServerDao();
 		//把字符串转换为Javabean对象（message——》Javabean对象）
-		JsonBean jsonBean = JSON.parseObject(message, JsonBean.class);
+		JsonBean jsonBean = (JsonBean) JSON.parseObject(message, JsonBean.class);
 		User user = jsonBean.getUser();
+		//System.out.println(jsonBean.toString());
+		//System.out.println(user);
 		if (user == null) {
 			throw new Exception("服务器接收到空对象");
 		}

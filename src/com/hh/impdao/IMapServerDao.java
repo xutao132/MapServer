@@ -19,17 +19,19 @@ public class IMapServerDao implements MapServerDao {
 		Connection connection = null;
 		try {
 			// 查询用户是否存在
-			if (searchUser(user.getUid()) != null)
+			if (searchUser(user.getUaccount()) != null) {
 				throw new Exception("用户已经存在");
+			} else {
+				connection = JDBCUtils.getConnection();
+				sql = "insert into hh_user(userid,account,userpassword) values(?,?,?)";
+				ps = connection.prepareStatement(sql);
+			}
 			int iResult = 0;
-			connection = JDBCUtils.getConnection();
-			sql = "insert into hh_user(userid,account,userpassword) values(?,?,?)";
-			ps = connection.prepareStatement(sql);
 			if (user != null) {
 				// 参数替换
 				ps.setInt(1, user.getUid());
-				ps.setString(3, user.getUpassword());
 				ps.setString(2, user.getUaccount());
+				ps.setString(3, user.getUpassword());
 				iResult = ps.executeUpdate();
 			}
 			// 注册是否成功
@@ -49,17 +51,15 @@ public class IMapServerDao implements MapServerDao {
 
 	}
 
-	public User searchUser(int userid) throws Exception {
+	public User searchUser(String account) throws Exception {
 		PreparedStatement ps = null;
 		Connection connection = null;
-		if (userid < 100000 || userid > 2000000000)
-			return null;
-		sql = "select userid,account,userpassword from hh_user where userid = ?";
+		sql = "select userid,account,userpassword from hh_user where account = ?";
 		User user = null;
 		try {
 			connection = JDBCUtils.getConnection();
 			ps = connection.prepareStatement(sql);
-			ps.setInt(1, userid);
+			ps.setString(1, account);
 			ResultSet resultSet = ps.executeQuery();
 			if (resultSet.next()) {
 				user = new User();
@@ -67,13 +67,52 @@ public class IMapServerDao implements MapServerDao {
 				user.setUid(resultSet.getInt("userid"));
 				user.setUaccount(resultSet.getString("account"));
 				user.setUpassword(resultSet.getString("userpassword"));
+				System.out.println(user.toString());
 			}
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		} finally {
 			JDBCUtils.closeConnection(connection, ps, null);
 		}
+		System.out.println(user);
 		return user;
+	}
+
+	public User searchUser(int userid) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public User login(String uaccount, String upassword) {
+		PreparedStatement ps = null; // 创建PreparedStatement对象 (用来做准备查询的对象)
+		Connection connection = null;// 创建connection对象
+		sql = "select userid,account,userpassword from hh_user where account = ? and userpassword = ?";
+		try {
+			connection = JDBCUtils.getConnection();//连接数据库
+			ps = connection.prepareStatement(sql);
+			ps.setObject(1, uaccount);
+			ps.setObject(2, upassword);
+			ResultSet resultSet = ps.executeQuery();
+			if(resultSet.next()){
+				User user =  new User();
+				 //读取查询到的结果
+					user.setUid(resultSet.getInt("userid"));
+					user.setUaccount(resultSet.getString("account"));
+					user.setUpassword(resultSet.getString("userpassword"));
+					//System.out.println(user.toString());
+					return  user;
+			}else {
+				throw new Exception("用户名或密码错误");
+			}
+		} catch (Exception e) {
+			System.out.println("数据库操作有误。。。。");
+			e.printStackTrace();
+		} finally {
+			JDBCUtils.closeConnection(connection, ps, null);
+		}
+		return null;
+		
 	}
 
 }
